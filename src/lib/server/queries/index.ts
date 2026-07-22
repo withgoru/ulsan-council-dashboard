@@ -1,4 +1,5 @@
 // 쿼리 배럴 + 의원 상세 통합 피드 빌더.
+export * from './years';
 export * from './members';
 export * from './attendance';
 export * from './activities';
