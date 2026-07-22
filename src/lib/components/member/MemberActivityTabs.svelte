@@ -125,7 +125,7 @@
 					: 'text-muted-foreground hover:bg-muted'}"
 			>
 				{tab.label}
-				<span class="tabular-nums opacity-70">{tab.items.length}</span>
+				<span class="tabular-nums">{tab.items.length}</span>
 			</button>
 		{/each}
 	</div>
