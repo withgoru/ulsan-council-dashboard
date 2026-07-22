@@ -55,7 +55,7 @@ ulsan-council-dashboard/            (기존 git repo, README.md만 있음)
 | 본회의/위원회 활동 목록(일자·회차·위원회) | CLIK API 목록(1차) + council.ulsan.kr 게시판(첨부파일·조회수 보강, 선택) | CLIK 목록만으로 날짜/회차/위원회명 충분 |
 | 의원명단(정당·선거구·위원회 직책·사진·연락처·약력) | council.ulsan.kr (`viewByPerson.do` + `mem/sub/profile.do`) | CLIK에 없음 |
 | 의원별 회의출석률 | council.ulsan.kr (`activity/attendanceStatistics.do`) | CLIK에 없음 |
-| 의안 접수/처리 | council.ulsan.kr (`kor/bill/list.do?bbsId=receiptBill\|processingBill`) | 구조화된 표, CLIK보다 상세 |
+| 의안 접수/처리 | council.ulsan.kr (`kor/bill/list.do?bbsId=acceptanceBill\|processingBill\|mooringBill`) | 구조화된 표, CLIK보다 상세. ⚠️ `receiptBill`은 오기 — 실제 접수의안 bbsId는 `acceptanceBill`. 검증 결과는 [scraper/ENDPOINTS.md](./scraper/ENDPOINTS.md) 참고 |
 | 서면질문답변(문서 기반, 회의장 발언 아님) | council.ulsan.kr (`bbsId=writtenQna`) | CLIK 회의록에 안 잡힘, 제목/날짜만 |
 | 보도자료(뉴스 타임라인) | council.ulsan.kr (`bbsId=press`) | CLIK에 없음 |
 
@@ -139,7 +139,7 @@ CREATE TABLE scrape_log (id INTEGER PRIMARY KEY, board TEXT, started_at TIMESTAM
 
 `minutes.py`의 `MINTS_HTML` 파싱: `div.contents-block.speaker-block` 요소마다 `<strong>` 안의 역할/이름(때로 `<a class="member_profile">`로 감싸짐)을 추출해 로스터와 이름 매칭, 직전에 지나온 `item-in-contents`(의사일정 항목)를 `agenda_item`으로 태깅, 나머지 텍스트를 `text`로 저장.
 
-**구현 착수 전 실제 확인 필요한 것** (미검증 항목): `attendanceStatistics.do`의 대수/전후반기 전환이 GET 쿼리인지 POST인지, `receiptBill`/`processingBill`의 정확한 공유 컬럼셋과 요청 방식, `municipalQna`/`writtenQna`가 `freeSpeech`와 완전히 동일한 행 구조인지, CLIK `rasmblyId` 단독 파라미터 동작 여부.
+**구현 착수 전 실제 확인 필요한 것** (미검증 항목): ~~`attendanceStatistics.do`의 대수/전후반기 전환이 GET 쿼리인지 POST인지, `receiptBill`/`processingBill`의 정확한 공유 컬럼셋과 요청 방식, `municipalQna`/`writtenQna`가 `freeSpeech`와 완전히 동일한 행 구조인지~~ → **이슈 #1에서 검증 완료, [scraper/ENDPOINTS.md](./scraper/ENDPOINTS.md) 참고** (출석률=POST `sDaesu`/`sCate`, 접수의안=`acceptanceBill`, 발의 의원명은 `view.do` 상세, qna 3개 게시판 컬럼 구조 상이). 남은 미검증: CLIK `rasmblyId` 단독 파라미터 동작 여부(이슈 #5에서 확인).
 
 ---
 
