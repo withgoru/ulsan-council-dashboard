@@ -1,0 +1,16 @@
+# Package Managers
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+bun.lock
+bun.lockb
+
+# Miscellaneous
+/static/
+
+# 프로젝트 문서(한글 마크다운 — prettier reflow 방지) & 스크래퍼(Python)
+/PLAN.md
+/PROMPT.md
+/README.md
+/scraper/
+/data/
