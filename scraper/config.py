@@ -52,9 +52,11 @@ BILL_BBS = {
 ATTENDANCE_PATH = "/kor/activity/attendanceStatistics.do"
 ATTENDANCE_HALVES = {"1": "전반기", "2": "후반기"}
 
-# 의원명단: viewByPerson.do(로스터) + mem/sub/profile.do(약력).
-MEMBERS_PATH = "/kor/member/viewByPerson.do"
-MEMBER_PROFILE_PATH = "/kor/member/sub/profile.do"
+# 의원명단: 로스터 viewByPerson.do + 프로필 상세 mem/sub/profile.do.
+# ⚠️ 검증(#3): PLAN의 /kor/member/... 는 500. 실제 경로는 /kor/councillor/, 프로필은 /mem/sub/.
+MEMBERS_PATH = "/kor/councillor/viewByPerson.do"
+MEMBER_PROFILE_PATH = "/mem/sub/profile.do"
+MEMBER_PROFILE_CITY = "D"  # profile.do 고정 파라미터 city=D(울산)
 
 # ── CLIK 지방의정포털 Open API ───────────────────────────────────────────────
 CLIK_BASE = "https://clik.nanet.go.kr"
