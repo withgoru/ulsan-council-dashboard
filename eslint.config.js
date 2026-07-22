@@ -20,7 +20,10 @@ export default defineConfig(
 		rules: {
 			// typescript-eslint strongly recommend that you do not use the no-undef lint rule on TypeScript projects.
 			// see: https://typescript-eslint.io/troubleshooting/faqs/eslint/#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors
-			'no-undef': 'off'
+			'no-undef': 'off',
+			// 이 앱은 base path 없이 루트 배포하고, 외부(council.ulsan.kr/CLIK) 링크가 많다.
+			// resolve() 강제는 외부 href 에 부적절하고 내부 링크도 단순 루트 경로라 불필요.
+			'svelte/no-navigation-without-resolve': 'off'
 		}
 	},
 	{

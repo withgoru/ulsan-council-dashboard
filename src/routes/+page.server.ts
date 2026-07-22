@@ -1,24 +1,25 @@
 import {
-	getAllMembers,
 	getActivities,
+	getAllMembers,
 	getBills,
 	getNews,
 	getPlenaryAttendance
 } from '$lib/server/queries';
+import type { Activity, Bill } from '$lib/types';
 import type { PageServerLoad } from './$types';
 
-// 데이터 레이어 동작 검증용 요약 로드(빌드 시점, better-sqlite3).
-// 실제 대시보드 UI 는 이슈 #9에서 이 데이터를 사용해 구성한다.
+// 대시보드 데이터(빌드 시점 프리렌더). 활동 피드는 본회의/위원회 활동 + 의안을 날짜 최신순 병합.
 export const load: PageServerLoad = () => {
-	const members = getAllMembers();
+	const feed: (Activity | Bill)[] = [...getActivities(), ...getBills()].sort((a, b) => {
+		const da = a.kind === 'activity' ? (a.date ?? '') : (a.proposedDate ?? '');
+		const db = b.kind === 'activity' ? (b.date ?? '') : (b.proposedDate ?? '');
+		return db.localeCompare(da);
+	});
+
 	return {
-		counts: {
-			members: members.length,
-			activities: getActivities().length,
-			bills: getBills().length,
-			news: getNews().length,
-			attendance: getPlenaryAttendance().length
-		},
-		sampleMember: members[0] ?? null
+		feed,
+		members: getAllMembers(),
+		attendance: getPlenaryAttendance(),
+		news: getNews()
 	};
 };
