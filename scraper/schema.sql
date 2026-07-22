@@ -161,6 +161,21 @@ CREATE TABLE IF NOT EXISTS speech_segments (
 CREATE INDEX IF NOT EXISTS idx_segments_member ON speech_segments(member_id);
 CREATE INDEX IF NOT EXISTS idx_segments_minutes ON speech_segments(minutes_id);
 
+-- ── 외부 언론 기사 후보 풀(네이버 뉴스 검색) ────────────────────────────────
+-- 자동 수집된 후보. 실제 공개는 큐레이션(data/media-curation.json)에서 승인한 것만.
+CREATE TABLE IF NOT EXISTS media_articles (
+  id           INTEGER PRIMARY KEY,
+  url          TEXT    NOT NULL UNIQUE,   -- 원문 링크(dedup 자연키)
+  title        TEXT    NOT NULL,          -- HTML 태그 제거된 제목
+  description  TEXT,                       -- 요약(태그 제거)
+  press        TEXT,                       -- 언론사(추출 가능 시)
+  published_at DATE,                        -- 보도일(pubDate)
+  query        TEXT,                        -- 어떤 검색어로 걸렸는지
+  first_seen_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  last_seen_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_media_published ON media_articles(published_at);
+
 -- ── 스크랩 실행 로그 ────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS scrape_log (
   id           INTEGER PRIMARY KEY,

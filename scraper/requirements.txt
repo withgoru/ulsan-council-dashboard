@@ -12,6 +12,8 @@ lxml==6.1.1
     # via ulsan-council-scraper
 python-dateutil==2.9.0.post0
     # via ulsan-council-scraper
+python-dotenv==1.2.2
+    # via ulsan-council-scraper
 requests==2.34.2
     # via ulsan-council-scraper
 six==1.17.0

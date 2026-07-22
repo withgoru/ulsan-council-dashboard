@@ -5,7 +5,8 @@
 !.env.test
 
 # ── 스크래퍼 산출물 ──
-data/
+# 루트 /data 만 무시(SQLite 산출물). src/lib/data(커밋 대상 큐레이션 JSON 등)는 제외하지 않음.
+/data/
 *.sqlite3
 *.sqlite3-wal
 *.sqlite3-shm

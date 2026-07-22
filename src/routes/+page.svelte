@@ -96,7 +96,7 @@
 
 		<div class="col col-right flex flex-col gap-6 lg:min-h-0 lg:overflow-y-auto lg:pr-1">
 			<div class="panel flex flex-col rounded-xl border p-4" data-panel="media">
-				<MediaTimeline />
+				<MediaTimeline articles={data.media.slice(0, DASHBOARD_LIMIT)} moreHref="/media" />
 			</div>
 		</div>
 	</div>

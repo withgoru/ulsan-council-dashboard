@@ -108,4 +108,13 @@ export interface SpeechSegment {
 
 export type MemberFeedItem = Activity | Bill | NewsItem | SpeechBoardItem | SpeechSegment;
 
+/** '언론이 본 의회'에 노출되는 큐레이션 승인 기사(외부 언론). data/media-curation.json 에 커밋. */
+export interface CuratedArticle {
+	url: string;
+	title: string;
+	press: string | null;
+	publishedAt: string | null; // ISO date
+	note: string | null; // 편집자 메모(선택)
+}
+
 export type { PartyId, Party } from '$lib/config/parties';
