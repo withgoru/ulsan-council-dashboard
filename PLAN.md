@@ -139,7 +139,7 @@ CREATE TABLE scrape_log (id INTEGER PRIMARY KEY, board TEXT, started_at TIMESTAM
 
 `minutes.py`의 `MINTS_HTML` 파싱: `div.contents-block.speaker-block` 요소마다 `<strong>` 안의 역할/이름(때로 `<a class="member_profile">`로 감싸짐)을 추출해 로스터와 이름 매칭, 직전에 지나온 `item-in-contents`(의사일정 항목)를 `agenda_item`으로 태깅, 나머지 텍스트를 `text`로 저장.
 
-**구현 착수 전 실제 확인 필요한 것** (미검증 항목): ~~`attendanceStatistics.do`의 대수/전후반기 전환이 GET 쿼리인지 POST인지, `receiptBill`/`processingBill`의 정확한 공유 컬럼셋과 요청 방식, `municipalQna`/`writtenQna`가 `freeSpeech`와 완전히 동일한 행 구조인지~~ → **이슈 #1에서 검증 완료, [scraper/ENDPOINTS.md](./scraper/ENDPOINTS.md) 참고** (출석률=POST `sDaesu`/`sCate`, 접수의안=`acceptanceBill`, 발의 의원명은 `view.do` 상세, qna 3개 게시판 컬럼 구조 상이). 남은 미검증: CLIK `rasmblyId` 단독 파라미터 동작 여부(이슈 #5에서 확인).
+**구현 착수 전 실제 확인 필요한 것** (미검증 항목): ~~`attendanceStatistics.do`의 대수/전후반기 전환이 GET 쿼리인지 POST인지, `receiptBill`/`processingBill`의 정확한 공유 컬럼셋과 요청 방식, `municipalQna`/`writtenQna`가 `freeSpeech`와 완전히 동일한 행 구조인지~~ → **이슈 #1에서 검증 완료, [scraper/ENDPOINTS.md](./scraper/ENDPOINTS.md) 참고** (출석률=POST `sDaesu`/`sCate`, 접수의안=`acceptanceBill`, 발의 의원명은 `view.do` 상세, qna 3개 게시판 컬럼 구조 상이). CLIK도 이슈 #5에서 검증 완료: 상세 파라미터명은 소문자 `docid`, **공개 데모 키는 페이지네이션 무시·최신 5건만 반환**(정식 키 발급 필요). `rasmblyId` 단독 필터는 데모 키 제한으로 확인 불가 — `searchType=RASMBLY_NM`+`searchKeyword` 조합 사용.
 
 ---
 
