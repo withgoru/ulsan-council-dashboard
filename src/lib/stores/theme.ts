@@ -11,7 +11,13 @@ function createTheme() {
 
 	function apply(t: Theme) {
 		if (!browser) return;
-		document.documentElement.classList.toggle('dark', t === 'dark');
+		const root = document.documentElement;
+		// 테마 전환 순간 모든 transition 을 잠시 끈다 → 요소별 색 전환 속도차로 인한 깜박임 방지.
+		root.classList.add('theme-switching');
+		root.classList.toggle('dark', t === 'dark');
+		// 강제 리플로우 후 다음 프레임에 transition 복원.
+		void root.offsetHeight;
+		requestAnimationFrame(() => root.classList.remove('theme-switching'));
 		try {
 			localStorage.setItem('theme', t);
 		} catch {

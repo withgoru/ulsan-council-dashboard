@@ -133,6 +133,13 @@
 	}
 }
 
+/* 테마 전환 중에는 모든 transition 을 즉시 끔(다크모드 토글 깜박임 방지). */
+:root.theme-switching *,
+:root.theme-switching *::before,
+:root.theme-switching *::after {
+	transition: none !important;
+}
+
 /* 모션 최소화 선호 시 애니메이션/트랜지션/스무스 스크롤 비활성화(WCAG 2.3.3). */
 @media (prefers-reduced-motion: reduce) {
 	*,

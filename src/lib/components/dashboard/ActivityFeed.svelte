@@ -5,12 +5,12 @@
 	let { items }: { items: (Activity | Bill)[] } = $props();
 </script>
 
-<section aria-labelledby="activity-heading" class="flex min-h-0 flex-1 flex-col">
-	<h2 id="activity-heading" class="mb-2 shrink-0 text-sm font-semibold tracking-tight">
+<section aria-labelledby="activity-heading" class="flex flex-col">
+	<h2 id="activity-heading" class="mb-2 text-sm font-semibold tracking-tight">
 		본회의·위원회 활동 / 의안
 	</h2>
 	{#if items.length}
-		<ul class="min-h-0 flex-1 lg:overflow-y-auto lg:pr-1">
+		<ul>
 			{#each items as item (item.id)}
 				<li><ActivityFeedItem {item} /></li>
 			{/each}
