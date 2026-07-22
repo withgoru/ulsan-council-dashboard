@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PARTIES, type PartyId } from '$lib/config/parties';
+	import type { PartyId } from '$lib/config/parties';
 
 	let {
 		name,
@@ -15,7 +15,7 @@
 <div class="flex items-center gap-2 py-1.5">
 	<span
 		class="size-2 shrink-0 rounded-full"
-		style="background-color: {PARTIES[partyId].brand}"
+		style="background-color: var(--party-{partyId})"
 		aria-hidden="true"
 	></span>
 	<span class="w-14 shrink-0 truncate text-xs font-medium">{name}</span>
