@@ -3,6 +3,7 @@
 	import MemberRoster from '$lib/components/dashboard/MemberRoster.svelte';
 	import AttendancePanel from '$lib/components/dashboard/AttendancePanel.svelte';
 	import Timeline from '$lib/components/dashboard/Timeline.svelte';
+	import SeoHead from '$lib/components/common/SeoHead.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -18,7 +19,13 @@
 	let active = $state<PanelId>('activity');
 </script>
 
-<div class="mx-auto flex min-h-svh max-w-[1400px] flex-col px-4 py-4 lg:h-svh lg:py-6">
+<SeoHead />
+
+<main
+	id="main-content"
+	tabindex="-1"
+	class="mx-auto flex min-h-svh max-w-350 flex-col px-4 py-4 lg:h-svh lg:py-6"
+>
 	<header class="mb-4 shrink-0">
 		<p class="text-xs font-medium text-muted-foreground">제9대 울산광역시의회</p>
 		<h1 class="text-xl font-bold tracking-tight sm:text-2xl">의정활동 대시보드</h1>
@@ -69,7 +76,7 @@
 			<Timeline items={data.news} />
 		</div>
 	</div>
-</div>
+</main>
 
 <style>
 	.dashboard-grid {

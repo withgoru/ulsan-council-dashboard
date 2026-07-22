@@ -19,7 +19,7 @@
 		alt={member.name}
 		width="120"
 		height="136"
-		class="h-[136px] w-[120px] shrink-0 self-center rounded-lg bg-muted object-cover sm:self-start"
+		class="h-34 w-30 shrink-0 self-center rounded-lg bg-muted object-cover sm:self-start"
 	/>
 
 	<div class="flex min-w-0 flex-1 flex-col gap-3">
@@ -35,7 +35,7 @@
 		{#if member.committees.length}
 			<ul class="flex flex-wrap gap-1.5">
 				{#each member.committees as c (c.name + c.role)}
-					<li class="rounded-md bg-muted px-2 py-0.5 text-xs">
+					<li class="rounded-md border border-border px-2 py-0.5 text-xs">
 						{c.name}
 						<span class="text-muted-foreground">{c.role}</span>
 					</li>
