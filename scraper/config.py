@@ -32,10 +32,12 @@ BOARD_ARTICLE_PATH = "/cop/bbs/selectBoardArticle.do"
 
 # 게시판 bbsId. ENDPOINTS.md 3절 검증 결과 기준(게시판별 컬럼 구조 상이).
 BBS = {
+    "plenary": "plenary",            # 본회의활동 (대수 X → 날짜로 필터)
+    "committee": "committee",        # 위원회활동 (소관위원회 컬럼, 날짜로 필터)
     "free_speech": "freeSpeech",     # 5분자유발언 (위원회 O, 대수 O)
     "municipal_qna": "municipalQna",  # 시정질문답변 (위원회 X, 대수 O)
     "written_qna": "writtenQna",     # 서면질문답변 (위원회 X, 대수 X → 날짜로 필터)
-    "press": "press",                # 보도자료 → 뉴스 타임라인
+    "press": "press",                # 보도자료 → 뉴스 타임라인 (날짜로 필터)
 }
 
 # 의안: /kor/bill/list.do (POST 폼 frm), 상세 /kor/bill/view.do.
