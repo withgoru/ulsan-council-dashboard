@@ -129,11 +129,11 @@ def parse_profile(soup: BeautifulSoup) -> dict[str, Any]:
 
 
 def scrape(conn: sqlite3.Connection, client: EgovBoardClient) -> int:
-    """로스터+프로필을 수집해 members 에 upsert. 처리한 의원 수 반환."""
+    """로스터+프로필을 수집해 members 에 upsert. 신규로 삽입된 의원 수 반환."""
     roster_soup = client.get_soup(config.MEMBERS_PATH)
     roster = parse_roster(roster_soup)
 
-    count = 0
+    new_count = 0
     for base in roster:
         code = base["member_code"]
         profile = client.get_soup(
@@ -157,6 +157,7 @@ def scrape(conn: sqlite3.Connection, client: EgovBoardClient) -> int:
             "profile_url": _profile_url(code),
             "photo_url": base["photo_url"],
         }
+        existed = db.exists(conn, "members", member_code=code, term=config.TERM)
         db.upsert(
             conn, "members", row,
             conflict=["member_code", "term"],
@@ -165,9 +166,10 @@ def scrape(conn: sqlite3.Connection, client: EgovBoardClient) -> int:
             update=["name", "party", "district", "committee", "birth_year",
                     "phone", "email", "bio", "profile_url", "photo_url", "last_seen_at"],
         )
-        count += 1
+        if not existed:
+            new_count += 1
     conn.commit()
-    return count
+    return new_count
 
 
 def load_name_index(conn: sqlite3.Connection, term: int = config.TERM) -> dict[str, int]:
@@ -191,7 +193,7 @@ if __name__ == "__main__":
         try:
             n = scrape(conn, client)
             db.finish_log(conn, log_id, new_rows=n)
-            print(f"scraped {n} members. total in DB: {db.count_rows(conn, 'members')}")
+            print(f"new members: {n}. total in DB: {db.count_rows(conn, 'members')}")
             print("\nname → member_id index:")
             for name, mid in sorted(load_name_index(conn).items(), key=lambda x: x[1]):
                 print(f"  {mid:>3d}  {name}")

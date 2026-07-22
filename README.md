@@ -23,12 +23,15 @@
 ## 개발 시작하기
 
 ```bash
-# 스크래퍼
+# 스크래퍼 (uv 사용). 최초 1회: cp .env.example .env
 cd scraper
-pip install -r requirements.txt
-python run.py
+uv run python run.py          # 전체 수집(멱등 — 재실행 시 신규분만 추가)
+# 개별 단계: uv run python members.py / uv run python -m boards.bills / uv run python minutes.py
 
 # 웹앱
 npm install
 npm run dev
 ```
+
+> CLIK 회의록 전량 수집에는 정식 API 키가 필요합니다(공개 데모 키는 최신 5건만 반환).
+> clik.nanet.go.kr에서 발급 후 `.env`의 `CLIK_API_KEY`에 설정하세요. 상세: [scraper/ENDPOINTS.md](./scraper/ENDPOINTS.md).
