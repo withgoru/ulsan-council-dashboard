@@ -10,9 +10,9 @@
 
 ## 기술 스택
 
-- Frontend: SvelteKit, Svelte, Tailwind CSS, shadcn-svelte, iconoir-svelte
+- Frontend: SvelteKit(Svelte 5), Tailwind CSS v4, shadcn-svelte, iconoir(unplugin-icons), Pretendard(자체호스팅)
 - Data: Python(requests, BeautifulSoup4) + SQLite
-- Deploy: Cloudflare Pages (`@sveltejs/adapter-static`)
+- Deploy: Cloudflare Pages (`@sveltejs/adapter-static`) — 빌드 명령 `npm run build`, 출력 디렉토리 `build`
 - 다크모드 지원, 모바일 퍼스트, SEO/웹 접근성(WCAG) 준수, 그레이스케일 UI + 정당 고유 컬러 포인트
 
 ## 문서
@@ -28,10 +28,17 @@ cd scraper
 uv run python run.py          # 전체 수집(멱등 — 재실행 시 신규분만 추가)
 # 개별 단계: uv run python members.py / uv run python -m boards.bills / uv run python minutes.py
 
-# 웹앱
+# 웹앱 (리포 루트)
 npm install
-npm run dev
+npm run dev              # 개발 서버
+npm run build            # 정적 빌드(prebuild 로 DB 존재 확인 → build/ 출력)
+npm run preview          # 빌드 결과 미리보기
 ```
+
+웹앱 빌드는 `prebuild`(scripts/check-db.mjs)로 `DATABASE_PATH`(기본 `./data/council.sqlite3`)의
+존재를 먼저 확인하므로, 빌드 전에 스크래퍼를 최소 1회 실행해 DB를 만들어 두어야 합니다.
+
+**Cloudflare Pages 설정**: 빌드 명령 `npm run build`, 출력 디렉토리 `build`, 환경변수 `DATABASE_PATH`/`CLIK_API_KEY`.
 
 > CLIK 회의록 전량 수집에는 정식 API 키가 필요합니다(공개 데모 키는 최신 5건만 반환).
 > clik.nanet.go.kr에서 발급 후 `.env`의 `CLIK_API_KEY`에 설정하세요. 상세: [scraper/ENDPOINTS.md](./scraper/ENDPOINTS.md).

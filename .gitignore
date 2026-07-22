@@ -2,6 +2,7 @@
 .env
 .env.*
 !.env.example
+!.env.test
 
 # ── 스크래퍼 산출물 ──
 data/
@@ -17,13 +18,18 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 
-# ── Node / SvelteKit (추후) ──
-node_modules/
-/build/
-/.svelte-kit/
-.vercel/
-.wrangler/
+# ── Node / SvelteKit ──
+node_modules
+/.svelte-kit
+/build
+.output
+.vercel
+.netlify
+.wrangler
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
 
 # ── OS / 에디터 ──
 .DS_Store
+Thumbs.db
 *.log
