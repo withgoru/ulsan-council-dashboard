@@ -107,9 +107,35 @@ PLAN.md 3절의 미검증 항목을 2026-07-22 실제 요청/응답으로 확인
 
 ---
 
+## 4. CLIK 회의록 Open API (`clik.nanet.go.kr/openapi/minutes.do`) — 이슈 #5 검증
+
+핵심 소스. `type=json` 응답은 `[{RESULT_CODE, RESULT_MESSAGE, TOTAL_COUNT, LIST_COUNT, LIST:[...]}]` 배열.
+
+### 목록 (`displayType=list`)
+
+- 파라미터: `key`, `type=json`, `displayType=list`, `searchType=RASMBLY_NM`, `searchKeyword=울산광역시의회`, `startCount`, `listCount`.
+- `LIST[].ROW` 필드: `DOCID`, `RASMBLY_SESN`(회기 265), `RASMBLY_ID`(052001), `MTG_DE`(YYYYMMDD), `RASMBLY_NM`, **`RASMBLY_NUMPR`(대수)**, `MINTS_ODR`(차수), `MTGNM`(본회의/위원회명).
+- **MTG_DE 내림차순** 정렬. 9대 필터: `RASMBLY_NUMPR=='9'` 이고 `MTG_DE >= 20260706`. 조건 위반 행에서 중단.
+- ⚠️ `rasmblyId` 단독 필터는 확인 불가(아래 데모 키 제한 때문). `searchType=RASMBLY_NM`+`searchKeyword` 조합만 검증됨.
+
+### ⚠️ 공개 데모 키(`e1a7f9…`)의 하드 제한 — **정식 키 발급 필요**
+
+- 데모 키는 `startCount`/`listCount`/`pageNo` 등 **모든 페이지네이션 파라미터를 무시**하고 **항상 최신 5건만** 반환한다(`TOTAL_COUNT`는 6640으로 보고되지만 실제 반환은 5건 고정).
+- 따라서 데모 키로는 9대 회의록 5건까지만 수집 가능. 전량 수집은 **사용자가 clik.nanet.go.kr 회원가입 → "인증키신청"으로 정식 키 발급** 후 `.env`의 `CLIK_API_KEY`에 설정해야 한다(계정 생성은 대행 불가).
+- 코드는 정식 키에서 정상 페이지네이션되도록 구현하되, "새 DOCID가 없는 페이지를 만나면 중단"하는 가드로 데모 키에서 무한 루프를 방지한다.
+
+### 상세 (`displayType=detail`)
+
+- 파라미터: `key`, `type=json`, `displayType=detail`, **`docid=<DOCID>`** (⚠️ 소문자 `docid`. `docId`/`DOCID`는 "상세아이디 값이 유효하지 않습니다" 오류).
+- 필드는 **최상위 obj**에 위치(LIST/ROW 아님): `MINTS_HTML`(회의록 전문 HTML), `MTR_SJ`(의사일정 요약), `ORGINL_FILE_URL`, 기타 목록과 동일한 메타.
+- `MINTS_HTML` 파싱: `div.contents-block.speaker-block` = 발언 1건. `<strong>` 안에 역할(○의장/○경제부시장…), 의원이면 `<a class="member_profile">이름</a>`. 그 뒤 텍스트(`<br/>` 구분)가 발언 내용. `strong.item-in-contents`(의사일정 항목, 불릿 '0' 접두)가 문서 순서상 발언 사이에 위치 → 직전 항목을 agenda_item 으로 태깅. 의원 매칭은 `data-member_code`(CLIK 자체 코드)가 아니라 **이름**으로.
+
+---
+
 ## PLAN.md 반영 필요 사항 요약
 
 1. `receiptBill` → **`acceptanceBill`**로 교체. `mooringBill`(계류의안) 추가 검토.
 2. 출석률 대수/반기 전환은 **POST(`sDaesu`,`sCate`)** 명시.
 3. 의안 발의 의원명은 **상세 `view.do`의 `제안의원`** 필드에서 취득(목록엔 유형만).
 4. `municipalQna`/`writtenQna`는 `freeSpeech`와 **컬럼 구조가 다름**. `writtenQna`는 대수 컬럼이 없어 **날짜 기준 필터**.
+5. CLIK 상세 파라미터명은 소문자 **`docid`**, 필드는 최상위 obj. **공개 데모 키는 5건 제한** → 정식 키 발급이 전량 수집의 전제.
