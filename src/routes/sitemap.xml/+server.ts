@@ -4,9 +4,14 @@ import type { RequestHandler } from './$types';
 
 export const prerender = true;
 
-// 대시보드 + 의원 상세 22개 정적 sitemap.
+// 대시보드 + 전체보기 목록 + 의원 상세 22개 정적 sitemap.
 export const GET: RequestHandler = () => {
-	const paths = ['/', ...getMemberSlugs().map((slug) => `/members/${slug}`)];
+	const paths = [
+		'/',
+		'/activities',
+		'/press',
+		...getMemberSlugs().map((slug) => `/members/${slug}`)
+	];
 	const urls = paths.map((p) => `\t<url><loc>${canonicalUrl(p)}</loc></url>`).join('\n');
 	const body = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
