@@ -37,6 +37,13 @@
 	--sidebar-accent-foreground: oklch(0.205 0 0);
 	--sidebar-border: oklch(0.922 0 0);
 	--sidebar-ring: oklch(0.708 0 0);
+
+	/* 정당 브랜드색(라이트 모드). 국민의힘 #E61E2B / 더불어민주당 #152484 / 진보당 #C81E45.
+	   진보당은 국민의힘과의 색 충돌을 피해 회전한 값(PLAN 4절). 흰 배경에서 대비 확보. */
+	--party-ppp: oklch(0.58 0.221 22);
+	--party-dpk: oklch(0.36 0.152 267);
+	--party-jinbo: oklch(0.53 0.19 8);
+	--party-etc: oklch(0.55 0.01 260);
 }
 
 .dark {
@@ -67,6 +74,12 @@
 	--sidebar-accent-foreground: oklch(0.985 0 0);
 	--sidebar-border: oklch(1 0 0 / 10%);
 	--sidebar-ring: oklch(0.556 0 0);
+
+	/* 정당 브랜드색(다크 모드): 어두운 배경에서 보이도록 명도를 올린 텍스트-세이프 변형. */
+	--party-ppp: oklch(0.7 0.19 22);
+	--party-dpk: oklch(0.7 0.14 267);
+	--party-jinbo: oklch(0.68 0.17 8);
+	--party-etc: oklch(0.72 0.01 260);
 }
 
 @theme inline {

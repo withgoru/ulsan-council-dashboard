@@ -9,8 +9,7 @@
 		size = 'sm'
 	}: { partyId: PartyId; partyName?: string; size?: 'sm' | 'xs' } = $props();
 
-	const party = $derived(PARTIES[partyId]);
-	const label = $derived(partyName ?? party.name);
+	const label = $derived(partyName ?? PARTIES[partyId].name);
 </script>
 
 <span
@@ -21,7 +20,7 @@
 >
 	<span
 		class="size-2 shrink-0 rounded-full"
-		style="background-color: {party.brand}"
+		style="background-color: var(--party-{partyId})"
 		aria-hidden="true"
 	></span>
 	{label}
