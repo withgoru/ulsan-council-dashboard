@@ -1,16 +1,11 @@
 <script lang="ts">
 	import PartyBadge from '$lib/components/common/PartyBadge.svelte';
-	import type { AttendanceRecord, Member } from '$lib/types';
+	import type { Member } from '$lib/types';
 	import Phone from '~icons/iconoir/phone';
 	import Mail from '~icons/iconoir/mail';
 	import OpenNewWindow from '~icons/iconoir/open-new-window';
 
-	let { member, attendance }: { member: Member; attendance: AttendanceRecord[] } = $props();
-
-	// 본회의 출석률(전반기 우선) 요약.
-	const plenary = $derived(
-		attendance.find((a) => a.meetingType === '본회의') ?? attendance[0] ?? null
-	);
+	let { member }: { member: Member } = $props();
 </script>
 
 <header class="flex flex-col gap-5 sm:flex-row sm:items-start">
@@ -43,15 +38,8 @@
 			</ul>
 		{/if}
 
-		<!-- 출석률 요약 + 연락처 -->
+		<!-- 연락처 -->
 		<div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-			{#if plenary}
-				<span>
-					<span class="text-muted-foreground">{plenary.half} 본회의 출석</span>
-					<b class="ml-1 tabular-nums">{plenary.attended}/{plenary.total}</b>
-					<span class="text-muted-foreground tabular-nums">({plenary.rate.toFixed(0)}%)</span>
-				</span>
-			{/if}
 			{#if member.contact.phone}
 				<a
 					href="tel:{member.contact.phone}"
