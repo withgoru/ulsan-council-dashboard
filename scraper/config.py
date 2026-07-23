@@ -9,18 +9,28 @@ import os
 from datetime import date
 from pathlib import Path
 
-# ── 임기(대수) ────────────────────────────────────────────────────────────
-TERM = 9  # 제9대 울산광역시의회
-# 9대 개원일. 이 날짜 이전 게시물/회의록은 이전 대수로 간주해 수집 중단.
-TERM_START_DATE = date(2026, 7, 6)
+from dotenv import load_dotenv
 
 # ── 경로 ──────────────────────────────────────────────────────────────────
 SCRAPER_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRAPER_DIR.parent
-# 웹앱(SvelteKit)이 빌드 시 읽는 것과 동일한 SQLite. .env의 DATABASE_PATH와 일치시킨다.
-DATABASE_PATH = Path(
-    os.environ.get("DATABASE_PATH", str(REPO_ROOT / "data" / "council.sqlite3"))
-).expanduser()
+
+# 리포 루트 .env 를 로드(웹앱 빌드와 공유). 이후 os.environ 조회가 .env 값을 본다.
+load_dotenv(REPO_ROOT / ".env")
+
+# ── 임기(대수) ────────────────────────────────────────────────────────────
+TERM = 9  # 제9대 울산광역시의회
+# 9대 임기 개시일(2026-07-01). 이 날짜 이전 게시물/회의록은 이전 대수로 간주해 수집 중단.
+TERM_START_DATE = date(2026, 7, 1)
+# 웹앱(SvelteKit)이 빌드 시 읽는 것과 동일한 SQLite.
+# DATABASE_PATH 가 상대경로면 실행 위치(scraper/)가 아니라 REPO_ROOT 기준으로 해석해
+# 웹앱(리포 루트에서 ./data 를 봄)과 항상 같은 파일을 가리키게 한다.
+_db_env = os.environ.get("DATABASE_PATH")
+if _db_env:
+    _db_path = Path(_db_env).expanduser()
+    DATABASE_PATH = _db_path if _db_path.is_absolute() else (REPO_ROOT / _db_path).resolve()
+else:
+    DATABASE_PATH = REPO_ROOT / "data" / "council.sqlite3"
 SCHEMA_PATH = SCRAPER_DIR / "schema.sql"
 
 # ── council.ulsan.kr ────────────────────────────────────────────────────────
@@ -66,7 +76,20 @@ CLIK_MINUTES_PATH = "/openapi/minutes.do"
 CLIK_RASMBLY_ID = "052001"          # 울산광역시의회 (rasmblyId 단독 필터는 이슈 #5에서 재확인)
 CLIK_RASMBLY_NM = "울산광역시의회"   # searchType=RASMBLY_NM + searchKeyword 조합이 검증된 접근
 # 문서 공개 데모 키. 사용자가 정식 키 발급 시 .env의 CLIK_API_KEY로 override.
-CLIK_API_KEY = os.environ.get("CLIK_API_KEY", "e1a7f967a146465aaf8721392e50e7a9")
+# .env 에 빈 값(CLIK_API_KEY=)이 있어도 데모 키로 폴백되도록 `or` 사용.
+CLIK_API_KEY = os.environ.get("CLIK_API_KEY") or "e1a7f967a146465aaf8721392e50e7a9"
+
+# ── 네이버 뉴스 검색 API — NAVER Cloud Platform(API Hub)로 이관됨 ─────────────
+# 레거시 openapi.naver.com → naverapihub.apigw.ntruss.com 로 엔드포인트/인증 변경.
+# 사용자가 NCP API Hub 에서 뉴스 검색 API 신청 후 발급받은 API Key(ID/Secret)를 .env 에 설정.
+NAVER_SEARCH_URL = "https://naverapihub.apigw.ntruss.com/search/v1/news"
+# API Hub 애플리케이션의 Client ID / Client Secret(계정 인증키 ncp_iam_* 아님).
+# 각각 X-NCP-APIGW-API-KEY-ID / X-NCP-APIGW-API-KEY 헤더로 전송.
+NAVER_CLIENT_ID = os.environ.get("NAVER_CLIENT_ID", "")
+NAVER_CLIENT_SECRET = os.environ.get("NAVER_CLIENT_SECRET", "")
+# 의회를 다룬 기사를 폭넓게 걸기 위한 검색어. 결과는 후보 풀 → 큐레이션에서 승인.
+NAVER_QUERIES = ["울산광역시의회", "울산시의회"]
+NAVER_DISPLAY = 50  # 쿼리당 최대(한도 100)
 
 # ── HTTP 클라이언트 동작 ──────────────────────────────────────────────────────
 USER_AGENT = (

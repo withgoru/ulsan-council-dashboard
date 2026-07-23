@@ -18,6 +18,7 @@ from typing import Callable
 
 import config
 import db
+import media
 import members
 import minutes
 from boards import (attendance, bills, committee, free_speech, municipal_qna,
@@ -73,6 +74,9 @@ def run() -> dict[str, tuple[int, str]]:
         # 7) CLIK 회의록 발언(핵심 소스)
         results["minutes"] = _run_step(
             conn, "minutes", lambda: minutes.scrape(conn, clik, name_index)[0])
+
+        # 8) 외부 언론 기사 후보(네이버). 키 없으면 스킵.
+        results["media"] = _run_step(conn, "media", lambda: media.scrape(conn))
 
         _print_summary(conn, results)
     return results
