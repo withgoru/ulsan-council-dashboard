@@ -108,13 +108,45 @@ export interface SpeechSegment {
 
 export type MemberFeedItem = Activity | Bill | NewsItem | SpeechBoardItem | SpeechSegment;
 
-/** '언론이 본 의회'에 노출되는 큐레이션 승인 기사(외부 언론). data/media-curation.json 에 커밋. */
-export interface CuratedArticle {
+// ── 이슈 타임라인(태그 기반 멀티미디어) ──────────────────────────────────────
+export type MediaType = 'article' | 'video' | 'release' | 'sns';
+
+export const MEDIA_TYPE_LABEL: Record<MediaType, string> = {
+	article: '기사',
+	video: '영상',
+	release: '보도자료',
+	sns: 'SNS'
+};
+
+/** 큐레이션된 미디어 항목(기사·영상 등). data/media-curation.json 의 items 풀. */
+export interface MediaItem {
 	url: string;
+	type: MediaType;
 	title: string;
-	press: string | null;
+	source: string | null; // 언론사/채널명
 	publishedAt: string | null; // ISO date
 	note: string | null; // 편집자 메모(선택)
+}
+
+export type IssueStatus = 'active' | 'ended' | 'hidden';
+
+/** 이슈(태그): 관련 미디어를 묶는 주제. itemUrls 로 items 를 N:N 참조. */
+export interface Issue {
+	id: string;
+	title: string;
+	description: string | null;
+	status: IssueStatus;
+	pinned: boolean;
+	order: number;
+	startDate: string | null;
+	endDate: string | null;
+	keywords: string[]; // 하이브리드 태깅용 추천 키워드
+	itemUrls: string[]; // 소속 미디어 url (items 참조)
+}
+
+/** 렌더용: 이슈 + 해석된 미디어 목록(최신순). */
+export interface ResolvedIssue extends Omit<Issue, 'itemUrls'> {
+	items: MediaItem[];
 }
 
 export type { PartyId, Party } from '$lib/config/parties';

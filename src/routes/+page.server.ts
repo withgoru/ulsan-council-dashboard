@@ -6,7 +6,7 @@ import {
 	getBills,
 	getNews
 } from '$lib/server/queries';
-import { getCuratedArticles } from '$lib/server/media';
+import { getActiveIssues } from '$lib/server/media';
 import type { Activity, Bill } from '$lib/types';
 import type { PageServerLoad } from './$types';
 
@@ -25,6 +25,6 @@ export const load: PageServerLoad = () => {
 		members: getAllMembers(),
 		attendance: getAttendance(),
 		years: getAvailableYears(),
-		media: getCuratedArticles()
+		issues: getActiveIssues()
 	};
 };

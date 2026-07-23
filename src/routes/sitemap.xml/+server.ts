@@ -10,7 +10,7 @@ export const GET: RequestHandler = () => {
 		'/',
 		'/activities',
 		'/press',
-		'/media',
+		'/issues',
 		...getMemberSlugs().map((slug) => `/members/${slug}`)
 	];
 	const urls = paths.map((p) => `\t<url><loc>${canonicalUrl(p)}</loc></url>`).join('\n');
