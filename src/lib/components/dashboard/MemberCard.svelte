@@ -47,26 +47,22 @@
 	</div>
 
 	{#if attendance}
-		<div class="border-t border-border/60 pt-1.5">
-			<div class="flex items-center justify-between text-[0.7rem] text-muted-foreground">
-				<span>본회의 출석</span>
-				<span class="tabular-nums">
-					{attendance.attended}/{attendance.total} ({pct.toFixed(0)}%)
-				</span>
-			</div>
+		<!-- 공간 절약: 출석 횟수·출석율 텍스트는 감추고 마우스 오버(title) 시 노출. -->
+		<div
+			class="mt-0.5 h-1.5 overflow-hidden rounded-full bg-muted"
+			role="meter"
+			aria-valuenow={Math.round(pct)}
+			aria-valuemin={0}
+			aria-valuemax={100}
+			aria-label="{member.name} 본회의 출석 {attendance.attended}/{attendance.total} ({Math.round(
+				pct
+			)}%)"
+			title="본회의 출석 {attendance.attended}/{attendance.total} ({pct.toFixed(0)}%)"
+		>
 			<div
-				class="mt-1 h-1.5 overflow-hidden rounded-full bg-muted"
-				role="meter"
-				aria-valuenow={Math.round(pct)}
-				aria-valuemin={0}
-				aria-valuemax={100}
-				aria-label="{member.name} 본회의 출석률 {Math.round(pct)}퍼센트"
-			>
-				<div
-					class="h-full rounded-full"
-					style="width: {pct}%; background-color: var(--party-{member.partyId})"
-				></div>
-			</div>
+				class="h-full rounded-full"
+				style="width: {pct}%; background-color: var(--party-{member.partyId})"
+			></div>
 		</div>
 	{/if}
 </a>
