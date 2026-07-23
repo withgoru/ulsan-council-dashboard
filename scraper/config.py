@@ -73,14 +73,16 @@ CLIK_RASMBLY_NM = "울산광역시의회"   # searchType=RASMBLY_NM + searchKeyw
 # 문서 공개 데모 키. 사용자가 정식 키 발급 시 .env의 CLIK_API_KEY로 override.
 CLIK_API_KEY = os.environ.get("CLIK_API_KEY", "e1a7f967a146465aaf8721392e50e7a9")
 
-# ── 네이버 뉴스 검색 API (외부 언론 보도 수집) ───────────────────────────────
-# 사용자가 developers.naver.com 에서 검색 API 앱 등록 후 .env 에 키 설정(무료).
-NAVER_SEARCH_URL = "https://openapi.naver.com/v1/search/news.json"
-NAVER_CLIENT_ID = os.environ.get("NAVER_CLIENT_ID", "")
-NAVER_CLIENT_SECRET = os.environ.get("NAVER_CLIENT_SECRET", "")
+# ── 네이버 뉴스 검색 API — NAVER Cloud Platform(API Hub)로 이관됨 ─────────────
+# 레거시 openapi.naver.com → naverapihub.apigw.ntruss.com 로 엔드포인트/인증 변경.
+# 사용자가 NCP API Hub 에서 뉴스 검색 API 신청 후 발급받은 API Key(ID/Secret)를 .env 에 설정.
+NAVER_SEARCH_URL = "https://naverapihub.apigw.ntruss.com/search/v1/news"
+# 신규 인증: X-NCP-APIGW-API-KEY-ID / X-NCP-APIGW-API-KEY 헤더에 매핑.
+NAVER_API_KEY_ID = os.environ.get("NAVER_API_KEY_ID", "")
+NAVER_API_KEY = os.environ.get("NAVER_API_KEY", "")
 # 의회를 다룬 기사를 폭넓게 걸기 위한 검색어. 결과는 후보 풀 → 큐레이션에서 승인.
 NAVER_QUERIES = ["울산광역시의회", "울산시의회"]
-NAVER_DISPLAY = 50  # 쿼리당 최대(네이버 한도 100)
+NAVER_DISPLAY = 50  # 쿼리당 최대(한도 100)
 
 # ── HTTP 클라이언트 동작 ──────────────────────────────────────────────────────
 USER_AGENT = (

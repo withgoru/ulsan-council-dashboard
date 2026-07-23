@@ -45,7 +45,7 @@ def _press_from_url(url: str) -> str | None:
 def _search(session: requests.Session, query: str) -> list[dict]:
     resp = session.get(
         config.NAVER_SEARCH_URL,
-        params={"query": query, "display": config.NAVER_DISPLAY, "sort": "date"},
+        params={"query": query, "display": config.NAVER_DISPLAY, "sort": "date", "format": "json"},
         timeout=config.REQUEST_TIMEOUT,
     )
     resp.raise_for_status()
@@ -53,15 +53,16 @@ def _search(session: requests.Session, query: str) -> list[dict]:
 
 
 def scrape(conn: sqlite3.Connection) -> int:
-    if not (config.NAVER_CLIENT_ID and config.NAVER_CLIENT_SECRET):
-        print("[media] NAVER_CLIENT_ID/SECRET 미설정 → 수집 건너뜀")
+    if not (config.NAVER_API_KEY_ID and config.NAVER_API_KEY):
+        print("[media] NAVER_API_KEY_ID/NAVER_API_KEY 미설정 → 수집 건너뜀")
         return 0
 
     session = requests.Session()
+    # NCP API Hub 인증 헤더.
     session.headers.update(
         {
-            "X-Naver-Client-Id": config.NAVER_CLIENT_ID,
-            "X-Naver-Client-Secret": config.NAVER_CLIENT_SECRET,
+            "X-NCP-APIGW-API-KEY-ID": config.NAVER_API_KEY_ID,
+            "X-NCP-APIGW-API-KEY": config.NAVER_API_KEY,
             "User-Agent": config.USER_AGENT,
         }
     )
