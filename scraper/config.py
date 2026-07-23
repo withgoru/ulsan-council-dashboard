@@ -78,9 +78,10 @@ CLIK_API_KEY = os.environ.get("CLIK_API_KEY") or "e1a7f967a146465aaf8721392e50e7
 # 레거시 openapi.naver.com → naverapihub.apigw.ntruss.com 로 엔드포인트/인증 변경.
 # 사용자가 NCP API Hub 에서 뉴스 검색 API 신청 후 발급받은 API Key(ID/Secret)를 .env 에 설정.
 NAVER_SEARCH_URL = "https://naverapihub.apigw.ntruss.com/search/v1/news"
-# 신규 인증: X-NCP-APIGW-API-KEY-ID / X-NCP-APIGW-API-KEY 헤더에 매핑.
-NAVER_API_KEY_ID = os.environ.get("NAVER_API_KEY_ID", "")
-NAVER_API_KEY = os.environ.get("NAVER_API_KEY", "")
+# API Hub 애플리케이션의 Client ID / Client Secret(계정 인증키 ncp_iam_* 아님).
+# 각각 X-NCP-APIGW-API-KEY-ID / X-NCP-APIGW-API-KEY 헤더로 전송.
+NAVER_CLIENT_ID = os.environ.get("NAVER_CLIENT_ID", "")
+NAVER_CLIENT_SECRET = os.environ.get("NAVER_CLIENT_SECRET", "")
 # 의회를 다룬 기사를 폭넓게 걸기 위한 검색어. 결과는 후보 풀 → 큐레이션에서 승인.
 NAVER_QUERIES = ["울산광역시의회", "울산시의회"]
 NAVER_DISPLAY = 50  # 쿼리당 최대(한도 100)

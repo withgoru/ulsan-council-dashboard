@@ -55,16 +55,16 @@ def _search(session: requests.Session, query: str) -> list[dict]:
 
 
 def scrape(conn: sqlite3.Connection) -> int:
-    if not (config.NAVER_API_KEY_ID and config.NAVER_API_KEY):
-        print("[media] NAVER_API_KEY_ID/NAVER_API_KEY 미설정 → 수집 건너뜀")
+    if not (config.NAVER_CLIENT_ID and config.NAVER_CLIENT_SECRET):
+        print("[media] NAVER_CLIENT_ID/NAVER_CLIENT_SECRET 미설정 → 수집 건너뜀")
         return 0
 
     session = requests.Session()
-    # NCP API Hub 인증 헤더.
+    # NCP API Hub 인증 헤더(Client ID/Secret 매핑).
     session.headers.update(
         {
-            "X-NCP-APIGW-API-KEY-ID": config.NAVER_API_KEY_ID,
-            "X-NCP-APIGW-API-KEY": config.NAVER_API_KEY,
+            "X-NCP-APIGW-API-KEY-ID": config.NAVER_CLIENT_ID,
+            "X-NCP-APIGW-API-KEY": config.NAVER_CLIENT_SECRET,
             "User-Agent": config.USER_AGENT,
         }
     )
