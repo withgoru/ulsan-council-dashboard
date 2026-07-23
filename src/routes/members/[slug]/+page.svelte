@@ -1,5 +1,6 @@
 <script lang="ts">
 	import MemberHeader from '$lib/components/member/MemberHeader.svelte';
+	import MemberAttendance from '$lib/components/member/MemberAttendance.svelte';
 	import MemberActivityTabs from '$lib/components/member/MemberActivityTabs.svelte';
 	import SeoHead from '$lib/components/common/SeoHead.svelte';
 	import NavArrowLeft from '~icons/iconoir/nav-arrow-left';
@@ -30,7 +31,13 @@
 		<NavArrowLeft class="size-4" /> 대시보드로
 	</a>
 
-	<MemberHeader member={data.member} attendance={data.attendance} />
+	<MemberHeader member={data.member} />
+
+	{#if data.attendance.length}
+		<div class="mt-6 rounded-xl border p-4">
+			<MemberAttendance attendance={data.attendance} partyId={data.member.partyId} />
+		</div>
+	{/if}
 
 	<div class="mt-8">
 		<MemberActivityTabs
