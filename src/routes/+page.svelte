@@ -13,17 +13,22 @@
 
 	let { data }: { data: PageData } = $props();
 
-	const DASHBOARD_LIMIT = 10;
+	const DASHBOARD_LIMIT = 10; // 우측 언론 패널
+	// 왼쪽 컬럼은 활동+보도자료 2개 패널이 한 화면에 함께 들어가도록 소수만 노출.
+	// 활동 항목이 보도자료보다 커서 상한을 다르게 둔다. 넘치는 항목은 각 패널의
+	// '전체 보기'(→ /activities, /press)로 이동.
+	const LEFT_ACTIVITY_LIMIT = 3;
+	const LEFT_PRESS_LIMIT = 3;
 
 	// 선택 연도(URL ?year, 기본 최신). 프리렌더 시엔 기본값, 클라이언트에서 URL 반영.
 	const year = $derived(
 		browser ? Number(page.url.searchParams.get('year')) || data.years[0] : data.years[0]
 	);
 	const yearFeed = $derived(
-		data.feed.filter((it) => feedItemYear(it) === year).slice(0, DASHBOARD_LIMIT)
+		data.feed.filter((it) => feedItemYear(it) === year).slice(0, LEFT_ACTIVITY_LIMIT)
 	);
 	const yearNews = $derived(
-		data.news.filter((it) => newsYear(it) === year).slice(0, DASHBOARD_LIMIT)
+		data.news.filter((it) => newsYear(it) === year).slice(0, LEFT_PRESS_LIMIT)
 	);
 	const yearQuery = $derived(year ? `?year=${year}` : '');
 
