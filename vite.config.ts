@@ -10,7 +10,7 @@ const CURATION_PATH = resolve('src/lib/data/media-curation.json');
 const DB_PATH = resolve(process.env.DATABASE_PATH ?? 'data/council.sqlite3');
 
 // 개발 전용 큐레이션 API. `vite dev` 에서만 동작(configureServer)하고 정적 빌드엔 포함되지 않는다.
-//  GET  /__curation/candidates → media_articles 후보 + 현재 승인 목록
+//  GET  /__curation/candidates → media_articles 후보 + 현재 큐레이션({items, issues})
 //  POST /__curation/save       → src/lib/data/media-curation.json 저장(커밋 대상)
 function curationApi(): PluginOption {
 	return {
@@ -23,14 +23,14 @@ function curationApi(): PluginOption {
 					const dbc = new Database(DB_PATH, { readonly: true, fileMustExist: true });
 					const candidates = dbc
 						.prepare(
-							`SELECT url, title, description, press, published_at AS publishedAt
+							`SELECT url, title, description, press AS source, published_at AS publishedAt
 							 FROM media_articles ORDER BY published_at DESC, id DESC`
 						)
 						.all();
 					dbc.close();
-					const curated = JSON.parse(readFileSync(CURATION_PATH, 'utf-8')).articles ?? [];
+					const curation = JSON.parse(readFileSync(CURATION_PATH, 'utf-8'));
 					res.setHeader('Content-Type', 'application/json');
-					res.end(JSON.stringify({ candidates, curated }));
+					res.end(JSON.stringify({ candidates, curation }));
 				} catch (err) {
 					res.statusCode = 500;
 					res.end(JSON.stringify({ error: String(err) }));
@@ -48,10 +48,11 @@ function curationApi(): PluginOption {
 				req.on('end', () => {
 					try {
 						const parsed = JSON.parse(body);
-						const articles = Array.isArray(parsed.articles) ? parsed.articles : [];
-						writeFileSync(CURATION_PATH, JSON.stringify({ articles }, null, '\t') + '\n');
+						const items = Array.isArray(parsed.items) ? parsed.items : [];
+						const issues = Array.isArray(parsed.issues) ? parsed.issues : [];
+						writeFileSync(CURATION_PATH, JSON.stringify({ items, issues }, null, '\t') + '\n');
 						res.setHeader('Content-Type', 'application/json');
-						res.end(JSON.stringify({ ok: true, count: articles.length }));
+						res.end(JSON.stringify({ ok: true, items: items.length, issues: issues.length }));
 					} catch (err) {
 						res.statusCode = 400;
 						res.end(JSON.stringify({ error: String(err) }));

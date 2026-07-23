@@ -2,7 +2,7 @@
 	import ActivityFeed from '$lib/components/dashboard/ActivityFeed.svelte';
 	import MemberRoster from '$lib/components/dashboard/MemberRoster.svelte';
 	import Timeline from '$lib/components/dashboard/Timeline.svelte';
-	import MediaTimeline from '$lib/components/dashboard/MediaTimeline.svelte';
+	import IssueTimeline from '$lib/components/dashboard/IssueTimeline.svelte';
 	import SeoHead from '$lib/components/common/SeoHead.svelte';
 	import YearSelect from '$lib/components/common/YearSelect.svelte';
 	import { feedItemYear, newsYear } from '$lib/utils/year';
@@ -37,7 +37,7 @@
 		{ id: 'activity', label: '활동' },
 		{ id: 'press', label: '보도자료' },
 		{ id: 'roster', label: '명단·출석' },
-		{ id: 'media', label: '언론' }
+		{ id: 'media', label: '이슈' }
 	];
 	let active = $state<PanelId>('activity');
 </script>
@@ -96,7 +96,7 @@
 
 		<div class="col col-right flex flex-col gap-6 lg:min-h-0 lg:overflow-y-auto lg:pr-1">
 			<div class="panel flex flex-col rounded-xl border p-4" data-panel="media">
-				<MediaTimeline articles={data.media.slice(0, DASHBOARD_LIMIT)} moreHref="/media" />
+				<IssueTimeline issues={data.issues} itemLimit={3} moreHref="/issues" heading="의회 이슈" />
 			</div>
 		</div>
 	</div>
