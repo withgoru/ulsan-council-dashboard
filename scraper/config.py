@@ -20,8 +20,8 @@ load_dotenv(REPO_ROOT / ".env")
 
 # ── 임기(대수) ────────────────────────────────────────────────────────────
 TERM = 9  # 제9대 울산광역시의회
-# 9대 개원일. 이 날짜 이전 게시물/회의록은 이전 대수로 간주해 수집 중단.
-TERM_START_DATE = date(2026, 7, 6)
+# 9대 임기 개시일(2026-07-01). 이 날짜 이전 게시물/회의록은 이전 대수로 간주해 수집 중단.
+TERM_START_DATE = date(2026, 7, 1)
 # 웹앱(SvelteKit)이 빌드 시 읽는 것과 동일한 SQLite. .env의 DATABASE_PATH와 일치시킨다.
 DATABASE_PATH = Path(
     os.environ.get("DATABASE_PATH", str(REPO_ROOT / "data" / "council.sqlite3"))
@@ -71,7 +71,8 @@ CLIK_MINUTES_PATH = "/openapi/minutes.do"
 CLIK_RASMBLY_ID = "052001"          # 울산광역시의회 (rasmblyId 단독 필터는 이슈 #5에서 재확인)
 CLIK_RASMBLY_NM = "울산광역시의회"   # searchType=RASMBLY_NM + searchKeyword 조합이 검증된 접근
 # 문서 공개 데모 키. 사용자가 정식 키 발급 시 .env의 CLIK_API_KEY로 override.
-CLIK_API_KEY = os.environ.get("CLIK_API_KEY", "e1a7f967a146465aaf8721392e50e7a9")
+# .env 에 빈 값(CLIK_API_KEY=)이 있어도 데모 키로 폴백되도록 `or` 사용.
+CLIK_API_KEY = os.environ.get("CLIK_API_KEY") or "e1a7f967a146465aaf8721392e50e7a9"
 
 # ── 네이버 뉴스 검색 API — NAVER Cloud Platform(API Hub)로 이관됨 ─────────────
 # 레거시 openapi.naver.com → naverapihub.apigw.ntruss.com 로 엔드포인트/인증 변경.

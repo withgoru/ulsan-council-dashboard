@@ -48,7 +48,9 @@ def _search(session: requests.Session, query: str) -> list[dict]:
         params={"query": query, "display": config.NAVER_DISPLAY, "sort": "date", "format": "json"},
         timeout=config.REQUEST_TIMEOUT,
     )
-    resp.raise_for_status()
+    if not resp.ok:
+        # API 오류 사유를 그대로 노출(401 인증/구독 문제 등 진단에 필요).
+        raise RuntimeError(f"네이버 API {resp.status_code}: {resp.text[:200]}")
     return resp.json().get("items", [])
 
 
