@@ -2,20 +2,41 @@
 	import PartyBadge from '$lib/components/common/PartyBadge.svelte';
 	import type { Member } from '$lib/types';
 
-	// attendance: 본회의 출석(있으면 카드 하단에 프로그레스 바로 표시).
-	let {
-		member,
-		attendance
-	}: {
-		member: Member;
-		attendance?: { attended: number; total: number; rate: number } | null;
-	} = $props();
+	type Bar = { attended: number; total: number; rate: number } | null;
 
-	const primaryCommittee = $derived(member.committees[0]);
-	const pct = $derived(attendance ? Math.max(0, Math.min(100, attendance.rate)) : 0);
+	// plenary=본회의, committee=상임위(소속 위원회 합산). 각각 프로그레스 바로 표시.
+	let { member, plenary, committee }: { member: Member; plenary?: Bar; committee?: Bar } = $props();
+
+	const clamp = (r: number) => Math.max(0, Math.min(100, r));
 </script>
 
-<!-- 카드 전체가 실제 <a>. 하단에 본회의 출석률 바(정당색 채움). -->
+{#snippet bar(label: string, data: Bar)}
+	{#if data}
+		<div
+			class="flex items-center gap-1.5"
+			title="{label} 출석 {data.attended}/{data.total} ({clamp(data.rate).toFixed(0)}%)"
+		>
+			<span class="w-7 shrink-0 text-[0.6rem] text-muted-foreground">{label}</span>
+			<div
+				class="h-1.5 flex-1 overflow-hidden rounded-full bg-muted"
+				role="meter"
+				aria-valuenow={Math.round(clamp(data.rate))}
+				aria-valuemin={0}
+				aria-valuemax={100}
+				aria-label="{member.name} {label} 출석 {data.attended}/{data.total} ({Math.round(
+					clamp(data.rate)
+				)}%)"
+			>
+				<div
+					class="h-full rounded-full"
+					style="width: {clamp(data.rate)}%; background-color: var(--party-{member.partyId})"
+				></div>
+			</div>
+		</div>
+	{/if}
+{/snippet}
+
+<!-- 카드 전체가 실제 <a>. 하단에 본회의/상임위 출석률 바(정당색, 수치는 hover). -->
 <a
 	href="/members/{member.slug}"
 	class="flex flex-col gap-2 rounded-lg border border-border bg-card p-2.5 transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
@@ -37,32 +58,19 @@
 			{#if member.district}
 				<span class="truncate text-xs text-muted-foreground">{member.district}</span>
 			{/if}
-			{#if primaryCommittee}
+			{#if member.committees.length}
 				<span class="truncate text-[0.7rem] text-muted-foreground">
-					{primaryCommittee.name}
-					{primaryCommittee.role}
+					{member.committees[0].name}
+					{member.committees[0].role}
 				</span>
 			{/if}
 		</div>
 	</div>
 
-	{#if attendance}
-		<!-- 공간 절약: 출석 횟수·출석율 텍스트는 감추고 마우스 오버(title) 시 노출. -->
-		<div
-			class="mt-0.5 h-1.5 overflow-hidden rounded-full bg-muted"
-			role="meter"
-			aria-valuenow={Math.round(pct)}
-			aria-valuemin={0}
-			aria-valuemax={100}
-			aria-label="{member.name} 본회의 출석 {attendance.attended}/{attendance.total} ({Math.round(
-				pct
-			)}%)"
-			title="본회의 출석 {attendance.attended}/{attendance.total} ({pct.toFixed(0)}%)"
-		>
-			<div
-				class="h-full rounded-full"
-				style="width: {pct}%; background-color: var(--party-{member.partyId})"
-			></div>
+	{#if plenary || committee}
+		<div class="flex flex-col gap-1">
+			{@render bar('본회의', plenary ?? null)}
+			{@render bar('상임위', committee ?? null)}
 		</div>
 	{/if}
 </a>

@@ -1,10 +1,10 @@
 import {
 	getActivities,
 	getAllMembers,
+	getAttendance,
 	getAvailableYears,
 	getBills,
-	getNews,
-	getPlenaryAttendance
+	getNews
 } from '$lib/server/queries';
 import { getCuratedArticles } from '$lib/server/media';
 import type { Activity, Bill } from '$lib/types';
@@ -23,7 +23,7 @@ export const load: PageServerLoad = () => {
 		feed,
 		news: getNews(),
 		members: getAllMembers(),
-		attendance: getPlenaryAttendance(),
+		attendance: getAttendance(),
 		years: getAvailableYears(),
 		media: getCuratedArticles()
 	};
