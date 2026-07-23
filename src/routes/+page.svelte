@@ -1,7 +1,6 @@
 <script lang="ts">
 	import ActivityFeed from '$lib/components/dashboard/ActivityFeed.svelte';
 	import MemberRoster from '$lib/components/dashboard/MemberRoster.svelte';
-	import AttendancePanel from '$lib/components/dashboard/AttendancePanel.svelte';
 	import Timeline from '$lib/components/dashboard/Timeline.svelte';
 	import MediaTimeline from '$lib/components/dashboard/MediaTimeline.svelte';
 	import SeoHead from '$lib/components/common/SeoHead.svelte';
@@ -33,12 +32,11 @@
 	const yearQuery = $derived(year ? `?year=${year}` : '');
 
 	// 모바일 세그먼트 탭(데스크톱은 3열 동시 표시라 무시).
-	type PanelId = 'activity' | 'press' | 'attendance' | 'roster' | 'media';
+	type PanelId = 'activity' | 'press' | 'roster' | 'media';
 	const tabs: { id: PanelId; label: string }[] = [
 		{ id: 'activity', label: '활동' },
 		{ id: 'press', label: '보도자료' },
-		{ id: 'attendance', label: '출석' },
-		{ id: 'roster', label: '명단' },
+		{ id: 'roster', label: '명단·출석' },
 		{ id: 'media', label: '언론' }
 	];
 	let active = $state<PanelId>('activity');
@@ -91,11 +89,8 @@
 		</div>
 
 		<div class="col col-center flex flex-col gap-6 lg:min-h-0 lg:overflow-y-auto lg:pr-1">
-			<div class="panel rounded-xl border p-4" data-panel="attendance">
-				<AttendancePanel attendance={data.attendance} members={data.members} />
-			</div>
 			<div class="panel rounded-xl border p-4" data-panel="roster">
-				<MemberRoster members={data.members} />
+				<MemberRoster members={data.members} attendance={data.attendance} />
 			</div>
 		</div>
 
@@ -134,7 +129,6 @@
 		}
 		.dashboard-grid[data-active='activity'] .panel[data-panel='activity'],
 		.dashboard-grid[data-active='press'] .panel[data-panel='press'],
-		.dashboard-grid[data-active='attendance'] .panel[data-panel='attendance'],
 		.dashboard-grid[data-active='roster'] .panel[data-panel='roster'],
 		.dashboard-grid[data-active='media'] .panel[data-panel='media'] {
 			display: block;
