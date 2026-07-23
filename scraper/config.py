@@ -22,10 +22,15 @@ load_dotenv(REPO_ROOT / ".env")
 TERM = 9  # 제9대 울산광역시의회
 # 9대 임기 개시일(2026-07-01). 이 날짜 이전 게시물/회의록은 이전 대수로 간주해 수집 중단.
 TERM_START_DATE = date(2026, 7, 1)
-# 웹앱(SvelteKit)이 빌드 시 읽는 것과 동일한 SQLite. .env의 DATABASE_PATH와 일치시킨다.
-DATABASE_PATH = Path(
-    os.environ.get("DATABASE_PATH", str(REPO_ROOT / "data" / "council.sqlite3"))
-).expanduser()
+# 웹앱(SvelteKit)이 빌드 시 읽는 것과 동일한 SQLite.
+# DATABASE_PATH 가 상대경로면 실행 위치(scraper/)가 아니라 REPO_ROOT 기준으로 해석해
+# 웹앱(리포 루트에서 ./data 를 봄)과 항상 같은 파일을 가리키게 한다.
+_db_env = os.environ.get("DATABASE_PATH")
+if _db_env:
+    _db_path = Path(_db_env).expanduser()
+    DATABASE_PATH = _db_path if _db_path.is_absolute() else (REPO_ROOT / _db_path).resolve()
+else:
+    DATABASE_PATH = REPO_ROOT / "data" / "council.sqlite3"
 SCHEMA_PATH = SCRAPER_DIR / "schema.sql"
 
 # ── council.ulsan.kr ────────────────────────────────────────────────────────
